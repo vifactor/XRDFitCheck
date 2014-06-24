@@ -3,6 +3,7 @@
 import csv, sys
 import xrayutilities as xu
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
 
 def loadCSV(path):
     """loads a special csv-like file, result of RSM fit"""
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     
     gridder(x, y, zexp)
     #Experimental map
-    ax = plt.subplot(221)
+    ax = plt.subplot2grid((3,2),(0,0))
     LOGINT = xu.maplog(gridder.data.transpose(),6,0)
     #draw rsm
     cs = ax.contourf(gridder.xaxis, gridder.yaxis, LOGINT, 25, extend='min')
@@ -48,14 +49,14 @@ if __name__ == '__main__':
     ax.set_ylabel(r'$q_{z}$')
     
     #qx exp scan
-    ax = plt.subplot(222)
+    ax = plt.subplot2grid((3,2),(0,1))
     qx,qxint = xu.analysis.line_cuts.get_qx_scan(gridder.xaxis, gridder.yaxis,
         gridder.data, 0.0)
     ax.semilogy(qx, qxint, "k-")
     ax.set_xlabel(r'$q_{x}$')
     ax.set_ylabel(r'Intensity')
     #qz exp scan
-    ax = plt.subplot(224)
+    ax = plt.subplot2grid((3,2),(1,1))
     qz,qzint = xu.analysis.line_cuts.get_qz_scan(gridder.xaxis, gridder.yaxis,
         gridder.data, 0.0)
     ax.semilogy(qz, qzint, "k-")
@@ -64,7 +65,7 @@ if __name__ == '__main__':
     
     gridder(x, y, zfin)
     #Fit map
-    ax = plt.subplot(223)
+    ax = plt.subplot2grid((3,2),(1,0))
     LOGINT = xu.maplog(gridder.data.transpose(),6,0)
     #draw rsm
     cs = ax.contourf(gridder.xaxis, gridder.yaxis, LOGINT, 25, extend='min')
@@ -73,14 +74,17 @@ if __name__ == '__main__':
     ax.set_ylabel(r'$q_{z}$')
     
     #qx fit scan
-    ax = plt.subplot(222)
+    ax = plt.subplot2grid((3,2),(0,1))
     qx,qxint = xu.analysis.line_cuts.get_qx_scan(gridder.xaxis, gridder.yaxis,
         gridder.data, 0.0)
     ax.semilogy(qx, qxint, "g-")
     #qz fit scan
-    ax = plt.subplot(224)
+    ax = plt.subplot2grid((3,2),(1,1))
     qz,qzint = xu.analysis.line_cuts.get_qz_scan(gridder.xaxis, gridder.yaxis,
         gridder.data, 0.0)
     ax.semilogy(qz, qzint, "g-")
+    
+    but_ax=plt.subplot2grid((3,2),(2,0),colspan=2)
+    load_button=Button(but_ax,'Load')
     
     plt.show()

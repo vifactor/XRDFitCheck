@@ -37,24 +37,50 @@ if __name__ == '__main__':
     
     plt.figure()
     
+    gridder(x, y, zexp)
     #Experimental map
     ax = plt.subplot(221)
-    gridder(x, y, zexp)
     LOGINT = xu.maplog(gridder.data.transpose(),6,0)
     #draw rsm
     cs = ax.contourf(gridder.xaxis, gridder.yaxis, LOGINT, 25, extend='min')
     #annotate axis
-    ax.set_xlabel(r'$Q_{x}$')
-    ax.set_ylabel(r'$Q_{z}$')
+    ax.set_xlabel(r'$q_{x}$')
+    ax.set_ylabel(r'$q_{z}$')
     
+    #qx exp scan
+    ax = plt.subplot(222)
+    qx,qxint = xu.analysis.line_cuts.get_qx_scan(gridder.xaxis, gridder.yaxis,
+        gridder.data, 0.0)
+    ax.semilogy(qx, qxint, "k-")
+    ax.set_xlabel(r'$q_{x}$')
+    ax.set_ylabel(r'Intensity')
+    #qz exp scan
+    ax = plt.subplot(224)
+    qz,qzint = xu.analysis.line_cuts.get_qz_scan(gridder.xaxis, gridder.yaxis,
+        gridder.data, 0.0)
+    ax.semilogy(qz, qzint, "k-")
+    ax.set_xlabel(r'$q_{z}$')
+    ax.set_ylabel(r'Intensity')
+    
+    gridder(x, y, zfin)
     #Fit map
     ax = plt.subplot(223)
-    gridder(x, y, zfin)
     LOGINT = xu.maplog(gridder.data.transpose(),6,0)
     #draw rsm
     cs = ax.contourf(gridder.xaxis, gridder.yaxis, LOGINT, 25, extend='min')
     #annotate axis
-    ax.set_xlabel(r'$Q_{x}$')
-    ax.set_ylabel(r'$Q_{z}$')
+    ax.set_xlabel(r'$q_{x}$')
+    ax.set_ylabel(r'$q_{z}$')
+    
+    #qx fit scan
+    ax = plt.subplot(222)
+    qx,qxint = xu.analysis.line_cuts.get_qx_scan(gridder.xaxis, gridder.yaxis,
+        gridder.data, 0.0)
+    ax.semilogy(qx, qxint, "g-")
+    #qz fit scan
+    ax = plt.subplot(224)
+    qz,qzint = xu.analysis.line_cuts.get_qz_scan(gridder.xaxis, gridder.yaxis,
+        gridder.data, 0.0)
+    ax.semilogy(qz, qzint, "g-")
     
     plt.show()

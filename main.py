@@ -21,22 +21,27 @@ class fit_viewer(object):
         self.load_button.on_clicked(self.do_work)
         
         #data gridder
-        self.gridder = xu.Gridder2D(25, 25)
+        self.gridder = None
+        
+        #will increase-decrease gridder sampling event
+        self.fig.canvas.mpl_connect('key_release_event',self.on_key_release)
+        
     
     def do_work(self, event):
         path = askopenfilename(title = "Open file...",
                             initialdir = cfg.USER_WORK_DIR,
                             filetypes = [('all files', '*.*')])
         if path:
-            x, y, zexp, zini, zfin = self.load_csv(path)
-            self.draw_graphs(x, y, zexp, zini, zfin)
+            self.load_csv(path)
+            self.draw_graphs()
             #save dir for next session
             cfg.USER_WORK_DIR = os.path.dirname(path)
         
     def load_csv(self, path):
         """loads a special csv-like file, result of RSM fit"""
-        x = []; y = []; 
-        zexp = []; zini = []; zfin = []; 
+        self.x = []; self.y = []; 
+        self.zexp = []; self.zini = []; self.zfin = [];
+        self.gridder = xu.Gridder2D(30, 30)
         dialect = csv.excel_tab
         commentchar = '#'
         with open(path, 'rb') as csvfile:
@@ -46,28 +51,41 @@ class fit_viewer(object):
                     if row[0].startswith(commentchar):
                         continue
                     try:
-                        x.append(float(row[0]))
-                        y.append(float(row[1]))
-                        zexp.append(float(row[2]))
-                        zini.append(float(row[3]))
-                        zfin.append(float(row[4]))
+                        self.x.append(float(row[0]))
+                        self.y.append(float(row[1]))
+                        self.zexp.append(float(row[2]))
+                        self.zini.append(float(row[3]))
+                        self.zfin.append(float(row[4]))
                     except IndexError as e:
                         print("Line %d: %s in %s" % (reader.line_num, row, e))
             except csv.Error as e:
                 sys.exit('file %s, line %d: %s' % (path, reader.line_num, e))
     
-        return x, y, zexp, zini, zfin
-        
     def clear_subplots(self):
         """Clears the subplots."""
         for j in [self.rsm_ax, self.qx_ax, self.qz_ax]:
             j.cla()
     
-    def draw_graphs(self, x, y, zexp, zini, zfin):
+    def on_key_release(self, event):
+        
+        if event.key in ['-', '+'] and self.gridder:
+            nx = self.gridder.nx
+            ny = self.gridder.ny
+            if event.key == '+':
+                nx += 1
+                ny += 1
+            elif event.key == '-':
+                if nx > 5 and ny > 5:
+                    nx -= 1
+                    ny -= 1
+            self.gridder.SetResolution(nx, ny)
+            self.draw_graphs()
+    
+    def draw_graphs(self):
         
         self.clear_subplots()
         
-        self.gridder(x, y, zexp)
+        self.gridder(self.x, self.y, self.zexp)
         #Experimental map
         LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
         cs = self.rsm_ax.contourf(self.gridder.xaxis, self.gridder.yaxis, LOGINT, 25, extend='min')
@@ -90,7 +108,7 @@ class fit_viewer(object):
         self.qz_ax.set_ylabel(r'Intensity')
         
         
-        self.gridder(x, y, zfin)
+        self.gridder(self.x, self.y, self.zfin)
         #Fit map
         LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
         #draw rsm
@@ -100,12 +118,12 @@ class fit_viewer(object):
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qx_ax.semilogy(qx, qxint, "g-")
+        self.qx_ax.semilogy(qx, qxint, "g-o")
         #qz fit scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qz_ax.semilogy(qz, qzint, "g-")
+        self.qz_ax.semilogy(qz, qzint, "g-o")
         
         plt.draw()
 

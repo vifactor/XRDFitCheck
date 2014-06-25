@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from Tkinter import Tk
 from tkFileDialog import askopenfilename
-import csv, sys
+import csv, sys, os
 import xrayutilities as xu
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
+import cfg
 
 class fit_viewer(object):
     def __init__(self):
@@ -24,9 +24,14 @@ class fit_viewer(object):
         self.gridder = xu.Gridder2D(25, 25)
     
     def do_work(self, event):
-        path = askopenfilename()
-        x, y, zexp, zini, zfin = self.load_csv(path)
-        self.draw_graphs(x, y, zexp, zini, zfin)
+        path = askopenfilename(title = "Open file...",
+                            initialdir = cfg.USER_WORK_DIR,
+                            filetypes = [('all files', '*.*')])
+        if path:
+            x, y, zexp, zini, zfin = self.load_csv(path)
+            self.draw_graphs(x, y, zexp, zini, zfin)
+            #save dir for next session
+            cfg.USER_WORK_DIR = os.path.dirname(path)
         
     def load_csv(self, path):
         """loads a special csv-like file, result of RSM fit"""
@@ -105,5 +110,7 @@ class fit_viewer(object):
         plt.draw()
 
 if __name__ == '__main__':
+    #read global configuration variables
+    cfg.read_config()
     viewer = fit_viewer()
     plt.show()

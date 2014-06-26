@@ -91,7 +91,8 @@ class fit_viewer(object):
         self.gridder(self.x, self.y, self.zexp)
         #Experimental map
         LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
-        cs = self.rsm_ax.contourf(self.gridder.xaxis, self.gridder.yaxis, LOGINT, 25, extend='min')
+        cs = self.rsm_ax.contourf(self.gridder.xaxis, self.gridder.yaxis,
+                            LOGINT, 25, extend='min')
         self.rsm_ax.set_xlabel(r'$q_{x}$', fontsize=18)
         self.rsm_ax.set_ylabel(r'$q_{z}$', fontsize=18)
         
@@ -99,14 +100,14 @@ class fit_viewer(object):
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qx_ax.semilogy(qx, qxint, "k-", label = "Experiment")
+        self.qx_ax.semilogy(qx, qxint, "k-", label = "Experiment", linewidth=2)
         self.qx_ax.set_xlabel(r'$q_{x}$', fontsize=18)
         self.qx_ax.set_ylabel(r'Intensity')
         #qz exp scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qz_ax.semilogy(qz, qzint, "k-")
+        self.qz_ax.semilogy(qz, qzint, "k-", linewidth=2)
         self.qz_ax.set_xlabel(r'$q_{z}$', fontsize=18)
         self.qz_ax.set_ylabel(r'Intensity')
         
@@ -115,7 +116,8 @@ class fit_viewer(object):
         #Fit map
         LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
         #draw rsm
-        cs = self.rsm_ax.contour(self.gridder.xaxis, self.gridder.yaxis, LOGINT, 25, extend='min')
+        cs = self.rsm_ax.contour(self.gridder.xaxis, self.gridder.yaxis,
+                            LOGINT, 25, extend='min')
         
         #qx fit scan
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,

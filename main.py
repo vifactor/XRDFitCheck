@@ -13,14 +13,13 @@ class fit_viewer(object):
         #figure title
         self.fig.canvas.set_window_title('XRDFitCheck')
         #layout
-        self.fig.subplots_adjust(0.06,0.08,0.97,0.95,0.25,0.95)
-        self.rsm_ax=plt.subplot2grid((8,4),(1,0),rowspan=7,colspan=2)
-        self.qx_ax=plt.subplot2grid((8,4),(0,2),rowspan=4,colspan=2)
-        self.qz_ax=plt.subplot2grid((8,4),(4,2),rowspan=4,colspan=2)
+        self.fig.subplots_adjust(0.06,0.08,0.97,0.95,0.25,0.05)
+        self.rsm_ax=plt.subplot2grid((10,4),(1,0),rowspan=9,colspan=2)
+        self.qx_ax=plt.subplot2grid((10,4),(1,2),rowspan=4,colspan=2)
+        self.qz_ax=plt.subplot2grid((10,4),(6,2),rowspan=4,colspan=2)
+        button_ax = plt.subplot2grid((10,4),(0,0),colspan=2)
         
-        self.qx_ax.xaxis.set_ticks_position('top')
         
-        button_ax = plt.subplot2grid((8,4),(0,0),colspan=2)
         self.load_button = Button(button_ax,'Load')
         self.load_button.on_clicked(self.do_work)
         
@@ -123,7 +122,7 @@ class fit_viewer(object):
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
         self.qx_ax.semilogy(qx, qxint, "g-o", label = "Fit")
-        self.qx_ax.legend(bbox_to_anchor=(0.0, -0.12, 1., .102),
+        self.qx_ax.legend(bbox_to_anchor=(0.0, 1.05, 1., .102),
             loc=3, ncol=2, mode="expand", borderaxespad=0.)
         #qz fit scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,

@@ -11,10 +11,12 @@ class fit_viewer(object):
     def __init__(self):
         self.fig=plt.figure()
         #layout
-        self.fig.subplots_adjust(0.06,0.06,0.97,0.97,0.25,0.95)
+        self.fig.subplots_adjust(0.06,0.08,0.97,0.95,0.25,0.95)
         self.rsm_ax=plt.subplot2grid((8,4),(1,0),rowspan=7,colspan=2)
         self.qx_ax=plt.subplot2grid((8,4),(0,2),rowspan=4,colspan=2)
         self.qz_ax=plt.subplot2grid((8,4),(4,2),rowspan=4,colspan=2)
+        
+        self.qx_ax.xaxis.set_ticks_position('top')
         
         button_ax = plt.subplot2grid((8,4),(0,0),colspan=2)
         self.load_button = Button(button_ax,'Load')

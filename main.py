@@ -10,6 +10,8 @@ import cfg
 class fit_viewer(object):
     def __init__(self):
         self.fig=plt.figure()
+        #figure title
+        self.fig.canvas.set_window_title('XRDFitCheck')
         #layout
         self.fig.subplots_adjust(0.06,0.08,0.97,0.95,0.25,0.95)
         self.rsm_ax=plt.subplot2grid((8,4),(1,0),rowspan=7,colspan=2)
@@ -91,22 +93,22 @@ class fit_viewer(object):
         #Experimental map
         LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
         cs = self.rsm_ax.contourf(self.gridder.xaxis, self.gridder.yaxis, LOGINT, 25, extend='min')
-        self.rsm_ax.set_xlabel(r'$q_{x}$')
-        self.rsm_ax.set_ylabel(r'$q_{z}$')
+        self.rsm_ax.set_xlabel(r'$q_{x}$', fontsize=18)
+        self.rsm_ax.set_ylabel(r'$q_{z}$', fontsize=18)
         
         #qx exp scan
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
         self.qx_ax.semilogy(qx, qxint, "k-", label = "Experiment")
-        self.qx_ax.set_xlabel(r'$q_{x}$')
+        self.qx_ax.set_xlabel(r'$q_{x}$', fontsize=18)
         self.qx_ax.set_ylabel(r'Intensity')
         #qz exp scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
         self.qz_ax.semilogy(qz, qzint, "k-")
-        self.qz_ax.set_xlabel(r'$q_{z}$')
+        self.qz_ax.set_xlabel(r'$q_{z}$', fontsize=18)
         self.qz_ax.set_ylabel(r'Intensity')
         
         

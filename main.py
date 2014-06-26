@@ -11,7 +11,7 @@ class fit_viewer(object):
     def __init__(self):
         self.fig=plt.figure()
         #layout
-        self.fig.subplots_adjust(0.06,0.06,0.97,0.97,0.25,0.2)
+        self.fig.subplots_adjust(0.06,0.06,0.97,0.97,0.25,0.95)
         self.rsm_ax=plt.subplot2grid((8,4),(1,0),rowspan=7,colspan=2)
         self.qx_ax=plt.subplot2grid((8,4),(0,2),rowspan=4,colspan=2)
         self.qz_ax=plt.subplot2grid((8,4),(4,2),rowspan=4,colspan=2)
@@ -96,7 +96,7 @@ class fit_viewer(object):
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qx_ax.semilogy(qx, qxint, "k-")
+        self.qx_ax.semilogy(qx, qxint, "k-", label = "Experiment")
         self.qx_ax.set_xlabel(r'$q_{x}$')
         self.qx_ax.set_ylabel(r'Intensity')
         #qz exp scan
@@ -118,7 +118,9 @@ class fit_viewer(object):
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qx_ax.semilogy(qx, qxint, "g-o")
+        self.qx_ax.semilogy(qx, qxint, "g-o", label = "Fit")
+        self.qx_ax.legend(bbox_to_anchor=(0.0, -0.12, 1., .102),
+            loc=3, ncol=2, mode="expand", borderaxespad=0.)
         #qz fit scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,

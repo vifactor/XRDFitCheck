@@ -19,6 +19,7 @@ class fit_viewer(object):
         self.qz_ax=plt.subplot2grid((10,4),(6,2),rowspan=4,colspan=2)
         button_ax = plt.subplot2grid((10,4),(0,0),colspan=2)
         
+        self.showInitial = False
         
         self.load_button = Button(button_ax,'Load')
         self.load_button.on_clicked(self.do_work)
@@ -83,6 +84,9 @@ class fit_viewer(object):
                     ny -= 1
             self.gridder.SetResolution(nx, ny)
             self.draw_graphs()
+        elif event.key == 'i' and self.gridder:
+            self.showInitial = not self.showInitial
+            self.draw_graphs()
     
     def draw_graphs(self):
         
@@ -123,14 +127,29 @@ class fit_viewer(object):
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qx_ax.semilogy(qx, qxint, "g-o", label = "Fit")
-        self.qx_ax.legend(bbox_to_anchor=(0.0, 1.05, 1., .102),
-            loc=3, ncol=2, mode="expand", borderaxespad=0.)
+        self.qx_ax.semilogy(qx, qxint, "r-o", label = "Fit")
         #qz fit scan
         qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
-        self.qz_ax.semilogy(qz, qzint, "g-o")
+        self.qz_ax.semilogy(qz, qzint, "r-o")
+        
+        #initial fit scans
+        if self.showInitial:
+            self.gridder(self.x, self.y, self.zini)
+            #qx fit scan
+            qx, qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
+                                                        self.gridder.yaxis,
+                                                        self.gridder.data, 0.0)
+            self.qx_ax.semilogy(qx, qxint, "g-x", label = "Initial")
+            #qz fit scan
+            qz,qzint = xu.analysis.line_cuts.get_qz_scan(self.gridder.xaxis,
+                                                        self.gridder.yaxis,
+                                                        self.gridder.data, 0.0)
+            self.qz_ax.semilogy(qz, qzint, "g-x")
+        
+        self.qx_ax.legend(bbox_to_anchor=(0.0, 1.05, 1., .102),
+                loc=3, ncol=3, mode="expand", borderaxespad=0.)
         
         plt.draw()
 

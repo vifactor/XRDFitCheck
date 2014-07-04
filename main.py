@@ -20,6 +20,7 @@ class fit_viewer(object):
         button_ax = plt.subplot2grid((10,4),(0,0),colspan=2)
         
         self.showInitial = False
+        self.showInitialMap = False
         
         self.load_button = Button(button_ax,'Load')
         self.load_button.on_clicked(self.do_work)
@@ -87,6 +88,9 @@ class fit_viewer(object):
         elif event.key == 'i' and self.gridder:
             self.showInitial = not self.showInitial
             self.draw_graphs()
+        elif event.key == 'y' and self.gridder:
+            self.showInitialMap = not self.showInitialMap
+            self.draw_graphs()
     
     def draw_graphs(self):
         
@@ -117,12 +121,6 @@ class fit_viewer(object):
         
         
         self.gridder(self.x, self.y, self.zfin)
-        #Fit map
-        LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
-        #draw rsm
-        cs = self.rsm_ax.contour(self.gridder.xaxis, self.gridder.yaxis,
-                            LOGINT, 25, extend='min')
-        
         #qx fit scan
         qx,qxint = xu.analysis.line_cuts.get_qx_scan(self.gridder.xaxis,
                                                     self.gridder.yaxis,
@@ -133,6 +131,15 @@ class fit_viewer(object):
                                                     self.gridder.yaxis,
                                                     self.gridder.data, 0.0)
         self.qz_ax.semilogy(qz, qzint, "r-o")
+        
+        if self.showInitialMap:
+            self.gridder(self.x, self.y, self.zini)
+        
+        #Fit map
+        LOGINT = xu.maplog(self.gridder.data.transpose(),6,0)
+        #draw rsm
+        cs = self.rsm_ax.contour(self.gridder.xaxis, self.gridder.yaxis,
+                            LOGINT, 25, extend='min')
         
         #initial fit scans
         if self.showInitial:
